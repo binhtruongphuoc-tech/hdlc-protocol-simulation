@@ -40,6 +40,20 @@ A major focus of this project is understanding how data is structured on the wir
 | ![Topology](images/topology.png) | ![Show Interface](images/show_interface.png) | ![Ping Test](images/ping_test.png) |
 
 ---
+##  Advanced cHDLC Frame Analysis
+
+In a synchronous WAN environment, Layer 2 encapsulation is critical for data integrity. Unlike standard ISO HDLC, this project utilizes **Cisco HDLC (cHDLC)**, which adds a "Protocol" field to support multi-protocol environments.
+
+![cHDLC Frame vs Standard HDLC](images/chdlc_frame.png)
+
+**Frame Structure Breakdown:**
+* **Flag (`0x7E`):** Marks the frame's start/end. Uses bit-stuffing to prevent data collision.
+* **Address (`0x0F` / `0x8F`):** Identifies the destination in a Point-to-Point link.
+* **Control (`0x00`):** Manages flow and sequence numbers (I-frame).
+* **Protocol (`0x0800` for IPv4):** *Cisco-specific addition.* Allows the router to identify the encapsulated Layer 3 protocol.
+* **FCS (16/32-bit):** Frame Check Sequence using CRC to detect transmission errors.
+
+---
 
 
 ##  Tools & Concepts

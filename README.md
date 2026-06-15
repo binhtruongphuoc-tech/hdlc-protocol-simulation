@@ -7,14 +7,14 @@ A practical simulation of Layer 2 HDLC encapsulation over a point-to-point WAN l
 
 ---
 
-## 🛠 The Setup
+## The Setup
 * **Topology:** Built a point-to-point serial link (DCE/DTE) between two Cisco routers.
 * **Configuration:** Applied the `encapsulation hdlc` command to enforce Cisco's framing. 
 * **Verification:** Checked Layer 2 line protocols via `show interfaces serial` and validated end-to-end connectivity with ICMP pings.
 
 ---
 
-## 🔍 Under the Hood: Cisco HDLC (cHDLC)
+## Under the Hood: Cisco HDLC (cHDLC)
 Standard ISO HDLC has a flaw: it doesn’t natively support multiple Layer 3 protocols. Cisco bypassed this by injecting a custom 2-byte **Protocol field** into the frame. 
 
 Here is what the packet actually looks like on the wire:

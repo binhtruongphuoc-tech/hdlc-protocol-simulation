@@ -1,34 +1,28 @@
 # hdlc-protocol-simulation
 Theoretical analysis and practical simulation of Layer 2 HDLC/cHDLC encapsulation and data link mechanisms
 
-# HDLC Protocol Analysis & WAN Simulation 
+# Cisco HDLC Protocol Simulation
 
-A networking project focused on the deep theoretical analysis and practical simulation of the High-Level Data Link Control (HDLC) protocol. Utilizing Cisco Packet Tracer, this project demonstrates how Layer 3 IP packets are encapsulated into Layer 2 HDLC frames for transmission over Wide Area Network (WAN) serial links.
-
----
-
-## Project Overview
-
-HDLC is a bit-oriented synchronous data link layer protocol developed by ISO. This project bridges the gap between networking theory and practical configuration by analyzing the exact frame structure and simulating a point-to-point serial connection between Cisco routers.
-
-### Core Simulation Features
-* **Topology:** A point-to-point WAN topology connecting two routing nodes via Serial DCE/DTE interfaces.
-* **Encapsulation:** Configured the `encapsulation hdlc` command on serial interfaces to enforce Cisco's proprietary cHDLC framing.
-* **Verification:** Validated the Layer 2 data link state using `show interfaces serial` and confirmed end-to-end Layer 3 connectivity with 100% successful ICMP Echo Requests (`ping`).
+A practical simulation of Layer 2 HDLC encapsulation over a point-to-point WAN link using Cisco Packet Tracer. The goal is to see exactly how IP packets are framed on the wire, focusing on Cisco's proprietary cHDLC format.
 
 ---
 
-## Protocol Architecture Analysis
+## 🛠 The Setup
+* **Topology:** Built a point-to-point serial link (DCE/DTE) between two Cisco routers.
+* **Configuration:** Applied the `encapsulation hdlc` command to enforce Cisco's framing. 
+* **Verification:** Checked Layer 2 line protocols via `show interfaces serial` and validated end-to-end connectivity with ICMP pings.
 
-A major focus of this project is understanding how data is structured on the wire. The implementation utilizes **Cisco HDLC (cHDLC)**, which introduces a "Protocol" field to the standard ISO HDLC frame to support multi-protocol environments.
+---
 
-**HDLC Frame Structure Analyzed:**
-1. **Flag (8 bits):** `01111110` - Marks the beginning and end of the frame for synchronization.
-2. **Address (8 bits):** Identifies the secondary station (destination).
-3. **Control (8/16 bits):** Defines the frame type (Information, Supervisory, or Unnumbered) and manages flow/error control.
-4. **Protocol (16 bits - Cisco specific):** Specifies the network layer protocol (e.g., IPv4) encapsulated within the frame.
-5. **Information (Variable):** The actual payload (Layer 3 packet).
-6. **FCS (16/32 bits):** Frame Check Sequence for cyclic redundancy check (CRC) error detection.
+## 🔍 Under the Hood: Cisco HDLC (cHDLC)
+Standard ISO HDLC has a flaw: it doesn’t natively support multiple Layer 3 protocols. Cisco bypassed this by injecting a custom 2-byte **Protocol field** into the frame. 
+
+Here is what the packet actually looks like on the wire:
+* **Flag (`0x7E`):** Start/end marker. Uses bit-stuffing to prevent collisions.
+* **Address & Control:** Standard P2P routing identifiers.
+* **Protocol (Cisco specific):** Tells the router what's inside the payload (e.g., `0x0800` means it's an IPv4 packet).
+* **Information:** The actual Layer 3 payload.
+* **FCS:** Standard CRC for error checking.
 
 ---
 
@@ -46,14 +40,6 @@ In a synchronous WAN environment, Layer 2 encapsulation is critical for data int
 
 ![cHDLC Frame vs Standard HDLC](images/chdlc_frame.png)
 
-**Frame Structure Breakdown:**
-* **Flag (`0x7E`):** Marks the frame's start/end. Uses bit-stuffing to prevent data collision.
-* **Address (`0x0F` / `0x8F`):** Identifies the destination in a Point-to-Point link.
-* **Control (`0x00`):** Manages flow and sequence numbers (I-frame).
-* **Protocol (`0x0800` for IPv4):** *Cisco-specific addition.* Allows the router to identify the encapsulated Layer 3 protocol.
-* **FCS (16/32-bit):** Frame Check Sequence using CRC to detect transmission errors.
-
----
 
 
 ##  Tools & Concepts
